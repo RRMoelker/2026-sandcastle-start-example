@@ -1,0 +1,91 @@
+<!doctype html>
+<!-- Throwaway prototype for "How do the Timesheet and Hour Server Pages look?". Not production code. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Urenbrug prototype</title>
+<style>
+  body { font: 14px system-ui, sans-serif; margin: 0; color: #222; }
+  nav { background: #1f3a5f; padding: .6rem 1rem; }
+  nav a { color: #fff; margin-right: 1.2rem; text-decoration: none; }
+  nav a.active { font-weight: bold; text-decoration: underline; }
+  section { padding: 1rem 2rem; border-bottom: 6px solid #eee; }
+  h1 { font-size: 1.3rem; } h2 { font-size: 1rem; margin: 1rem 0 .3rem; }
+  table { border-collapse: collapse; width: 100%; max-width: 900px; }
+  td, th { border-bottom: 1px solid #ddd; padding: .3rem .5rem; text-align: left; }
+  .num { text-align: right; }
+  .badge { display: inline-block; width: 1.4rem; text-align: center; border-radius: 3px; color: #fff; font-size: 11px; }
+  .synced { background: #2e7d32; } .failed { background: #c62828; } .na { background: #bbb; }
+  .pending td { text-decoration: line-through; color: #999; }
+  .mismatch { background: #ffebee; }
+  form.add { display: flex; gap: .5rem; margin: .5rem 0 1rem; }
+  .toolbar { display: flex; gap: 1rem; align-items: center; }
+  .offline { color: #c62828; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<section>
+  <nav><a class="active" href="#">Timesheet</a><a href="#">Dignitas Hour Server</a><a href="#">Client Hour Server (Acme)</a></nav>
+  <h1>Timesheet</h1>
+  <div class="toolbar">
+    <a href="#">← week 41</a> <strong>Week 42 (13–19 Oct 2026)</strong> <a href="#">week 43 →</a>
+    <button>Retry all failed (1)</button> <button>Reset demo data</button>
+  </div>
+  <form class="add">
+    <input type="date" value="2026-10-15">
+    <select><option>Acme Logistics · Warehouse Portal</option><option>Acme Logistics · Support</option><option>Dignitas · Training</option><option>Dignitas · Internal</option></select>
+    <input type="number" step="0.25" value="1.5" style="width:5rem">
+    <input placeholder="Description" style="flex:1">
+    <button>Add</button>
+  </form>
+  <table>
+    <tr><th>Day</th><th>Project</th><th class="num">Hours</th><th>Description</th><th>Sync</th><th></th></tr>
+    <tr><td>Mon 13</td><td>Acme · Warehouse Portal</td><td class="num">6.00</td><td>Picking list export</td><td><span class="badge synced">D</span> <span class="badge synced">A</span></td><td><a href="#">Edit</a> · <a href="#">Delete</a></td></tr>
+    <tr><td></td><td>Dignitas · Internal</td><td class="num">2.00</td><td>Team meeting</td><td><span class="badge synced">D</span> <span class="badge na">A</span></td><td><a href="#">Edit</a> · <a href="#">Delete</a></td></tr>
+    <tr><td>Tue 14</td><td>Acme · Support</td><td class="num">7.75</td><td>Ticket triage and a long description that will be cut off for Acme at eighty chars…</td><td><span class="badge synced">D</span> <span class="badge failed">A</span></td><td><button>Retry</button> <a href="#">Edit</a> · <a href="#">Delete</a></td></tr>
+    <tr class="pending"><td>Wed 15</td><td>Dignitas · Training</td><td class="num">4.00</td><td>AI session day 3</td><td><span class="badge synced">D</span> <span class="badge na">A</span></td><td><em>deletion pending</em> <button>Retry</button></td></tr>
+    <tr><th colspan="2">Week total</th><th class="num">19.75</th><th colspan="3"></th></tr>
+  </table>
+</section>
+
+<section>
+  <nav><a href="#">Timesheet</a><a class="active" href="#">Dignitas Hour Server</a><a href="#">Client Hour Server (Acme)</a></nav>
+  <h1>Dignitas Hour Server</h1>
+  <div class="toolbar"><span>Status: <strong>Online</strong></span> <button>Go offline</button> <a href="#">← week 41</a> <strong>2026-W42</strong> <a href="#">week 43 →</a></div>
+  <p>Records as this server stores them (<code>GET /fake/dignitas/registrations?week=2026-W42</code>).</p>
+  <table>
+    <tr><th>registrationId</th><th>date</th><th>projectCode</th><th class="num">hours</th><th>remark</th></tr>
+    <tr><td>reg-001</td><td>2026-10-13</td><td>ACME-WP</td><td class="num">6.00</td><td>Picking list export</td></tr>
+    <tr><td>reg-002</td><td>2026-10-13</td><td>DIG-INT</td><td class="num">2.00</td><td>Team meeting</td></tr>
+    <tr><td>reg-003</td><td>2026-10-14</td><td>ACME-SUP</td><td class="num">7.75</td><td>Ticket triage and a long description…</td></tr>
+    <tr><td>reg-004</td><td>2026-10-15</td><td>DIG-TRN</td><td class="num">4.00</td><td>AI session day 3</td></tr>
+  </table>
+  <h2>Per day: server vs. Timesheet</h2>
+  <table>
+    <tr><th>Day</th><th class="num">Server</th><th class="num">Timesheet</th></tr>
+    <tr><td>Mon 13</td><td class="num">8.00</td><td class="num">8.00</td></tr>
+    <tr><td>Tue 14</td><td class="num">7.75</td><td class="num">7.75</td></tr>
+    <tr class="mismatch"><td>Wed 15</td><td class="num">4.00</td><td class="num">0.00</td></tr>
+  </table>
+</section>
+
+<section>
+  <nav><a href="#">Timesheet</a><a href="#">Dignitas Hour Server</a><a class="active" href="#">Client Hour Server (Acme)</a></nav>
+  <h1>Client Hour Server (Acme Logistics)</h1>
+  <div class="toolbar"><span>Status: <span class="offline">Offline</span></span> <button>Go online</button> <a href="#">← week 41</a> <strong>13–19 Oct 2026</strong> <a href="#">week 43 →</a></div>
+  <p>Records as this server stores them (<code>GET /fake/acme/entries?from=2026-10-13&amp;to=2026-10-19</code>). Offline only blocks the API Sync uses; the page reads the store through the inspect route, so it still shows what the server holds.</p>
+  <table>
+    <tr><th>entryNo</th><th>workDate</th><th>workOrder</th><th class="num">minutes</th><th>summary</th></tr>
+    <tr><td>1</td><td>2026-10-13</td><td>WO-1042</td><td class="num">360</td><td>Picking list export</td></tr>
+  </table>
+  <h2>Per day: server vs. Timesheet (Acme Projects only, in minutes)</h2>
+  <table>
+    <tr><th>Day</th><th class="num">Server</th><th class="num">Timesheet</th></tr>
+    <tr><td>Mon 13</td><td class="num">360</td><td class="num">360</td></tr>
+    <tr class="mismatch"><td>Tue 14</td><td class="num">0</td><td class="num">465</td></tr>
+  </table>
+</section>
+
+</body>
+</html>
